@@ -26,20 +26,22 @@ import { RxDBMigrationPlugin } from '../plugins/migration';
 addRxPlugin(RxDBMigrationPlugin);
 
 
-const elapsedTime = (before: any) => {
-    try {
-        return convertHrtime(process.hrtime(before)).milliseconds;
-    } catch (err) {
-        return performance.now() - before;
-    }
+const elapsedTime = (beforeTimeInMilliseconds: any) => {
+    const currentTime = nowTime();
+    return currentTime - beforeTimeInMilliseconds;
 };
-const nowTime = () => {
+
+/**
+ * returns the current time in milliseconds
+ */
+function nowTime(): number {
     try {
-        return process.hrtime();
+        const ret = convertHrtime(process.hrtime.bigint()).milliseconds;
+        return ret;
     } catch (err) {
         return performance.now();
     }
-};
+}
 
 async function afterTest() {
     await AsyncTestUtil.wait(waitTimeBetween / 2);
