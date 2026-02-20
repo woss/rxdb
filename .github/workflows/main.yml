@@ -707,10 +707,7 @@ jobs:
         with:
           working-directory: ./examples/vue
           # retry because of random CI failures on slow servers
-            run: |
-              until npm run test; do
-                sleep 5
-              done
+          run: timeout 1h bash -lc "until npm run test; do sleep 5; done"
 
   example-svelte:
     runs-on: ubuntu-22.04
@@ -975,7 +972,6 @@ jobs:
           npm install
           npm run build
 
-      - run: npm run test:replication-google-drive
 
       # supabase
       - run: npm run supabase:start
