@@ -61,6 +61,7 @@ import {
 
 import type {
     ReplicationPullHandlerResult,
+    RxConflictHandler,
     RxReplicationConflict,
     RxReplicationWriteToMasterRow,
     RxStorage,
@@ -970,6 +971,78 @@ describe('replication.test.ts', () => {
 
                 await localCollection.database.close();
                 await remoteCollection.database.close();
+            });
+            it('should resolve after a push conflict was resolved', async () => {
+                /**
+                 * Use a conflict handler that keeps the local state
+                 * so that the resolved document gets pushed to the master
+                 * after the conflict was resolved.
+                 */
+                const conflictHandler: RxConflictHandler<TestDocType> = {
+                    isEqual: defaultConflictHandler.isEqual,
+                    resolve: (i) => Promise.resolve(i.newDocumentState)
+                };
+                const localCollection = await humansCollection.createHumanWithTimestamp(
+                    0,
+                    randomToken(10),
+                    false,
+                    undefined,
+                    conflictHandler
+                );
+
+                // the master already has a different state -> the first push must conflict
+                const masterDocs = new Map<string, WithDeleted<TestDocType>>();
+                masterDocs.set('conflict-doc', Object.assign(
+                    schemaObjects.humanWithTimestampData({
+                        id: 'conflict-doc',
+                        name: 'remote-name'
+                    }),
+                    { _deleted: false }
+                ));
+
+                let hadConflict = false;
+                const replicationState = replicateRxCollection<TestDocType, CheckpointType>({
+                    collection: localCollection,
+                    replicationIdentifier: REPLICATION_IDENTIFIER_TEST,
+                    live: true,
+                    push: {
+                        handler: async (rows) => {
+                            // short sleep to simulate network latency
+                            await wait(10);
+                            const conflicts: WithDeleted<TestDocType>[] = [];
+                            rows.forEach(row => {
+                                const currentMasterDoc = masterDocs.get(row.newDocumentState.id);
+                                if (
+                                    currentMasterDoc &&
+                                    (
+                                        !row.assumedMasterState ||
+                                        !conflictHandler.isEqual(currentMasterDoc, row.assumedMasterState, 'push-handler')
+                                    )
+                                ) {
+                                    hadConflict = true;
+                                    conflicts.push(currentMasterDoc);
+                                } else {
+                                    masterDocs.set(row.newDocumentState.id, row.newDocumentState);
+                                }
+                            });
+                            return conflicts;
+                        }
+                    }
+                });
+                ensureReplicationHasNoErrors(replicationState);
+
+                const doc = await localCollection.insert(schemaObjects.humanWithTimestampData({
+                    id: 'conflict-doc',
+                    name: 'local-name'
+                }));
+
+                await replicationState.awaitDocumentPushed(doc);
+
+                assert.strictEqual(hadConflict, true, 'the first push must have returned a conflict');
+                const masterDoc = ensureNotFalsy(masterDocs.get('conflict-doc'));
+                assert.strictEqual(masterDoc.name, 'local-name', 'the resolved state must exist on the master');
+
+                await localCollection.database.close();
             });
             it('should throw if the replication has no push handler', async () => {
                 const { localCollection, remoteCollection } = await getTestCollections({ local: 0, remote: 0 });
