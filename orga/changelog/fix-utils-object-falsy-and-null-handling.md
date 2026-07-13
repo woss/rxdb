@@ -1,1 +1,0 @@
-- FIX utils: `getFromObjectOrThrow()` no longer throws on existing falsy values like `0`, `''` or `false`, and `flattenObject()` no longer drops keys whose value is `null`.

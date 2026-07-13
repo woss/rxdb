@@ -1,1 +1,0 @@
-- Add SEM landingpage `gaawsds3` (a/b testing 3 title/description/bulletpoint variations for reliable offline sync you control) at `/sem/gaawsds3.html`.

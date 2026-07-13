@@ -1,1 +1,0 @@
-ADD `replicationState.awaitDocumentPushed(rxDocument)` which returns a promise that resolves once the given `RxDocument` state was successfully pushed to the server. (https://github.com/pubkey/rxdb/issues/8632)

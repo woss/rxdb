@@ -1,1 +1,0 @@
-Fix WebMCP v3 tests by resetting the WebMCP polyfill state between unit tests so `navigator.modelContextTesting` is reinstalled reliably after each test run. Related to PR https://github.com/pubkey/rxdb/pull/8673

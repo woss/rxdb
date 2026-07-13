@@ -1,1 +1,0 @@
-- Add SEM landingpage `garealm3` (replace a deprecated mobile sync stack with self-hosted RxDB replication) that a/b tests 3 title, description and bulletpoint variations at `/sem/garealm3.html`.

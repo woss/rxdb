@@ -1,1 +1,0 @@
-- Add SEM landingpage `gaencdb2` (field-level encryption for JavaScript and TypeScript apps) that a/b tests 3 title, description and bulletpoint variations at `/sem/gaencdb2.html`.

@@ -1,1 +1,0 @@
-- ADD Datenschutzerklärung / Privacy Policy page (German and English) at `/privacy/`, set to `noindex`, and linked in the docs footer next to the Legal Notice.

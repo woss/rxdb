@@ -1,1 +1,0 @@
-- ADD SEM landingpages `/sem/gaidxdb1.html`, `/sem/gaidxdb2.html` and `/sem/gaidxdb3.html`, each a/b testing 3 variations of the hero title, description and bulletpoints.
