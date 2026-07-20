@@ -166,8 +166,8 @@ npm install rxdb rxjs --save
 #### Store data
 
 ```javascript
-import { 
-  createRxDatabase
+import {
+    createRxDatabase
 } from 'rxdb/plugins/core';
 
 /**
@@ -176,7 +176,7 @@ import {
  * @link https://rxdb.info/rx-storage.html
  */
 import {
-  getRxStorageLocalstorage
+    getRxStorageLocalstorage
 } from 'rxdb/plugins/storage-localstorage';
 
 // create a database
