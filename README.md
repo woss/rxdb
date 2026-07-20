@@ -175,7 +175,9 @@ import {
  * In other JavaScript runtimes, we can use different storages:
  * @link https://rxdb.info/rx-storage.html
  */
-import { getRxStorageLocalstorage } from 'rxdb/plugins/storage-localstorage';
+import {
+  getRxStorageLocalstorage
+} from 'rxdb/plugins/storage-localstorage';
 
 // create a database
 const db = await createRxDatabase({
