@@ -98,7 +98,13 @@ export function VideoBox({ videoId, title, duration, startAt, dark }: VideoBoxPr
             <div style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{ ...styles.thumbnailWrapper }}>
                     <img
-                        src={`https://i3.ytimg.com/vi/${videoId}/mqdefault.jpg`}
+                        /**
+                         * The thumbnails are downloaded at build time by
+                         * scripts/docs-download-video-thumbnails.mjs and served
+                         * from the docs host itself, because the YouTube CDN
+                         * (i3.ytimg.com) is blocked in China.
+                         */
+                        src={`/files/video-thumbnails/${videoId}.jpg`}
                         alt={title}
                         style={{
                             ...styles.thumbnail,
@@ -107,8 +113,6 @@ export function VideoBox({ videoId, title, duration, startAt, dark }: VideoBoxPr
                         }}
                         loading="lazy"
                         decoding="async"
-                        referrerPolicy="no-referrer"
-                        crossOrigin="anonymous"
                         fetchPriority="low"
                     />
                     <div
